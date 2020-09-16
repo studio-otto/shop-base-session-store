@@ -6,6 +6,10 @@
   "browser": "dist/session-store.esm.js",
   "module": "dist/session-store.esm.js",
   "unpkg": "dist/session-store.min.js",
+  "files": [
+    "dist/*",
+    "src/**/*.vue"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.js",
     "test": "jest",
@@ -50,5 +54,8 @@
   "bugs": {
     "url": "https://github.com/studio-otto/shop-base-session-store/issues"
   },
-  "homepage": "https://github.com/studio-otto/shop-base-session-store#readme"
+  "homepage": "https://github.com/studio-otto/shop-base-session-store#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
