@@ -11,10 +11,10 @@ const state = {
 // getters
 const getters = {
   client(state, getters, rootState) {
-    return new ShopifyBuyClient(
-      rootState.domain,
-      rootState.token,
-    )
+    return ShopifyBuyClient.buildClient({
+      domain: rootState.domain,
+      storefrontAccessToken: rootState.token,
+    })
   }
 }
 
@@ -23,10 +23,9 @@ const actions = {
   // ----------------
   // CHECKOUT CREATION/RETRIEVAL METHODS
   // ----------------
-
   async getCheckout({commit, dispatch, getters}, checkoutId = null) {
     commit("setCartIsBusy", true);
-    const id = checkoutId ? checkoutId : sessionStorage.getItem('currentCheckout');
+    const id = checkoutId ? checkoutId : localStorage.getItem('currentCheckout');
     const checkout = id && id !== "undefined"
             ? await getters.client.checkout.fetch(id)
             : await dispatch('createCheckout');
@@ -120,7 +119,7 @@ const actions = {
 // mutations
 const mutations = {
   setCheckout(state, checkout) {
-    sessionStorage.setItem('currentCheckout', checkout.id);
+    localStorage.setItem('currentCheckout', checkout.id);
     Vue.set(state, 'checkout', checkout);
     state.itemCount = checkout && checkout.lineItems
       ? checkout.lineItems.reduce((count, lineItem) => {
