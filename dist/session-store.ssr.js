@@ -22,7 +22,7 @@ const actions = {
     getters
   }, checkoutId = null) {
     commit("setCartIsBusy", true);
-    const id = checkoutId ? checkoutId : sessionStorage.getItem('currentCheckout');
+    const id = checkoutId ? checkoutId : localStorage.getItem('currentCheckout');
     const checkout = id && id !== "undefined" ? await getters.client.checkout.fetch(id) : await dispatch('createCheckout');
     commit('setCheckout', checkout);
     commit("setCartIsBusy", false);
@@ -154,7 +154,7 @@ const actions = {
 
 const mutations = {
   setCheckout(state, checkout) {
-    sessionStorage.setItem('currentCheckout', checkout.id);
+    localStorage.setItem('currentCheckout', checkout.id);
     Vue__default['default'].set(state, 'checkout', checkout);
     state.itemCount = checkout && checkout.lineItems ? checkout.lineItems.reduce((count, lineItem) => {
       return lineItem.quantity + count;
@@ -489,7 +489,9 @@ const actions$1 = {
     }
 
     if (targetProduct.metafields) {
-      dispatch('getProductsByHandle', [...targetProduct.metafields.pdp_swatch_products.split(','), ...targetProduct.metafields.pdp_similar_products.split(',')]);
+      const swatchProducts = targetProduct.metafields.pdp_swatch_products ? targetProduct.metafields.pdp_swatch_products.split(',') : [];
+      const similarProducts = targetProduct.metafields.pdp_similar_products ? targetProduct.metafields.pdp_similar_products.split(',') : [];
+      dispatch('getProductsByHandle', [...swatchProducts, ...similarProducts]);
     }
   },
 

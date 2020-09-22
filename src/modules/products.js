@@ -56,10 +56,12 @@ const actions = {
       targetProduct = await getters.apiClient.fetchProduct(handle);
       commit('pushToAllProducts', [targetProduct]);
       commit('setIsLoading', false);
-    }
+  }
     
     if(targetProduct.metafields) {
-      dispatch('getProductsByHandle', [...targetProduct.metafields.pdp_swatch_products.split(','), ...targetProduct.metafields.pdp_similar_products.split(',')])
+      const swatchProducts = targetProduct.metafields.pdp_swatch_products ? targetProduct.metafields.pdp_swatch_products.split(',') : []
+      const similarProducts = targetProduct.metafields.pdp_similar_products ? targetProduct.metafields.pdp_similar_products.split(',') : []
+      dispatch('getProductsByHandle', [...swatchProducts, ...similarProducts])
     }
   },
 
