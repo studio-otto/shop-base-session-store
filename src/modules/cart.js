@@ -101,9 +101,9 @@ const actions = {
 
   async autoOpenDrawer({commit, dispatch, state}) {
     if (state.drawerIsOpen) return;
-    commit('toggleDrawer', true);
+    commit('setDrawerState', true);
     await dispatch("resolveAfter3Seconds");
-    commit('toggleDrawer', false);
+    commit('setDrawerState', false);
   },
 
   async resolveAfter3Seconds() {
@@ -128,8 +128,12 @@ const mutations = {
       : 0;
   },
 
-  toggleDrawer(state, drawerIsOpen) {
-    state.drawerIsOpen = drawerIsOpen;
+  toggleDrawer(state) {
+    state.drawerIsOpen = !state.drawerIsOpen;
+  },
+
+  setDrawerState(state, drawerState) {
+    state.drawerIsOpen = drawerState;
   },
 
   setCartIsBusy(state, cartIsBusy) {
