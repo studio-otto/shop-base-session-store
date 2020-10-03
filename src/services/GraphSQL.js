@@ -26,7 +26,7 @@ export default class GraphSql {
             edges {
               cursor
               node {
-                ${this._productFragment()}
+                handle
               }
             }
           }

@@ -34,11 +34,11 @@ const actions = {
   },
 
   async getCollectionProductPage({dispatch, commit, getters}, {handle, cursor, page}) {
-    const collectionResponse = await getters.apiClient.fetchCollection(handle, cursor, cursor ? 20 : 6, page);
+    const collectionResponse = await getters.apiClient.fetchCollection(handle, cursor, cursor ? 250 : 50, page);
 
     if(collectionResponse) {
-      commit('addCollectionProducts', {handle, collectionResponse});
-      if(collectionResponse.products) commit('pushToAllProducts', collectionResponse.products);
+      commit('pushToProducts', collectionResponse.products);
+      commit('updateCollection', {handle, collectionResponse});
       if(collectionResponse.nextPage) {
         await dispatch('getCollectionProductPage', {handle, cursor: collectionResponse.nextPage, page: page+1 });
       }
@@ -53,22 +53,23 @@ const actions = {
 
     if (!targetProduct || (targetProduct && !targetProduct.meta) ) {
       commit('setIsLoading', true);
+      commit('updateProductsLoadingState', {handle, loadingState: {isLoaded: false, isLoading: true}});
       targetProduct = await getters.apiClient.fetchProduct(handle);
-      commit('pushToAllProducts', [targetProduct]);
+      commit('pushToProducts', [targetProduct]);
       commit('setIsLoading', false);
-  }
+    }
     
     if(targetProduct.metafields) {
       const swatchProducts = targetProduct.metafields.pdp_swatch_products ? targetProduct.metafields.pdp_swatch_products.split(',') : []
       const similarProducts = targetProduct.metafields.pdp_similar_products ? targetProduct.metafields.pdp_similar_products.split(',') : []
-      dispatch('getProductsByHandle', [...swatchProducts, ...similarProducts])
+      dispatch('getProductsByHandle', [...swatchProducts, ...similarProducts]);
     }
   },
 
   async getProductsByHandle({state, commit, getters}, handlesArray = []) {
     const unloadedProductHandles = handlesArray.filter(handle => !state.allProducts[handle]);
     const loadedProducts = await getters.apiClient.fetchProductsFromHandles(unloadedProductHandles);
-    commit('pushToAllProducts', loadedProducts)
+    commit('pushToProducts', loadedProducts);
   }
 };
 
@@ -79,10 +80,10 @@ const mutations = {
   },
 
   markCollectionAsFullyLoaded(state, handle) {
-    state.loadedCollections = [...state.loadedCollections, handle]
+    state.loadedCollections = [...state.loadedCollections, handle];
   },
 
-  addCollectionProducts(state, {handle, collectionResponse}) {
+  updateCollection(state, {handle, collectionResponse}) {
     const collection = state.collections[handle];
     const newCollection = collection ? collection : collectionResponse;
     if (collection && state.collections[handle].products && collectionResponse.products) {
@@ -91,12 +92,24 @@ const mutations = {
     Vue.set(state.collections, handle, newCollection);
   },
 
-  pushToAllProducts(state, products) {
+  pushToProducts(state, products) {
     products.forEach((product) => {
-      if (product !== 'Stale') {
-        Vue.set(state.allProducts, product.handle, product)
+      if (product === 'Stale') return
+      const isOnlyHandle = typeof product === "string"
+      const handle = isOnlyHandle ? product : product.handle
+      const newProductAttributes = isOnlyHandle ? { handle } : product
+      const productAttrs = {
+        ...newProductAttributes,
+        isLoading: false,
+        isLoaded: !isOnlyHandle
       }
+
+      Vue.set(state.allProducts, handle, productAttrs);
     })
+  },
+
+  updateProductsLoadingState(state, {handle, loadingState}) { // loading state must include isLoading: boolean, isLoaded: boolean
+    Vue.set(state.allProducts, handle, {...state.allProducts[handle], ...loadingState});
   }
 };
 
