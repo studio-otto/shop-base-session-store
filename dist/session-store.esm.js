@@ -215,7 +215,7 @@ class GraphSql {
             edges {
               cursor
               node {
-                ${this._productFragment()}
+                handle
               }
             }
           }
@@ -361,7 +361,7 @@ class ApiClient {
       const productsData = this._normalizeGraphqlResponse(responseData.products);
 
       return { ...responseData,
-        products: productsData.content.map((product, index) => this._normalizeGraphqlProduct(product, index + page * limit)).filter(this.filterAvailableAndStocked),
+        products: productsData.content.map(product => product.handle),
         nextPage: productsData.cursor
       };
     }).catch(response => {
@@ -469,14 +469,14 @@ const actions$1 = {
     cursor,
     page
   }) {
-    const collectionResponse = await getters.apiClient.fetchCollection(handle, cursor, cursor ? 20 : 6, page);
+    const collectionResponse = await getters.apiClient.fetchCollection(handle, cursor, cursor ? 250 : 50, page);
 
     if (collectionResponse) {
-      commit('addCollectionProducts', {
+      commit('pushToProducts', collectionResponse.products);
+      commit('updateCollection', {
         handle,
         collectionResponse
       });
-      if (collectionResponse.products) commit('pushToAllProducts', collectionResponse.products);
 
       if (collectionResponse.nextPage) {
         await dispatch('getCollectionProductPage', {
@@ -501,8 +501,15 @@ const actions$1 = {
 
     if (!targetProduct || targetProduct && !targetProduct.meta) {
       commit('setIsLoading', true);
+      commit('updateProductsLoadingState', {
+        handle,
+        loadingState: {
+          isLoaded: false,
+          isLoading: true
+        }
+      });
       targetProduct = await getters.apiClient.fetchProduct(handle);
-      commit('pushToAllProducts', [targetProduct]);
+      commit('pushToProducts', [targetProduct]);
       commit('setIsLoading', false);
     }
 
@@ -520,7 +527,7 @@ const actions$1 = {
   }, handlesArray = []) {
     const unloadedProductHandles = handlesArray.filter(handle => !state.allProducts[handle]);
     const loadedProducts = await getters.apiClient.fetchProductsFromHandles(unloadedProductHandles);
-    commit('pushToAllProducts', loadedProducts);
+    commit('pushToProducts', loadedProducts);
   }
 
 }; // mutations
@@ -534,7 +541,7 @@ const mutations$1 = {
     state.loadedCollections = [...state.loadedCollections, handle];
   },
 
-  addCollectionProducts(state, {
+  updateCollection(state, {
     handle,
     collectionResponse
   }) {
@@ -548,11 +555,29 @@ const mutations$1 = {
     Vue.set(state.collections, handle, newCollection);
   },
 
-  pushToAllProducts(state, products) {
+  pushToProducts(state, products) {
     products.forEach(product => {
-      if (product !== 'Stale') {
-        Vue.set(state.allProducts, product.handle, product);
-      }
+      if (product === 'Stale') return;
+      const isOnlyHandle = typeof product === "string";
+      const handle = isOnlyHandle ? product : product.handle;
+      const newProductAttributes = isOnlyHandle ? {
+        handle
+      } : product;
+      const productAttrs = { ...newProductAttributes,
+        isLoading: false,
+        isLoaded: !isOnlyHandle
+      };
+      Vue.set(state.allProducts, handle, productAttrs);
+    });
+  },
+
+  updateProductsLoadingState(state, {
+    handle,
+    loadingState
+  }) {
+    // loading state must include isLoading: boolean, isLoaded: boolean
+    Vue.set(state.allProducts, handle, { ...state.allProducts[handle],
+      ...loadingState
     });
   }
 

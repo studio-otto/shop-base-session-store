@@ -34,8 +34,7 @@ export default class ApiClient {
       return {
         ...responseData,
         products: productsData.content
-                    .map((product,index) => this._normalizeGraphqlProduct(product, index + page*limit))
-                    .filter(this.filterAvailableAndStocked),
+                    .map(product => product.handle),
         nextPage: productsData.cursor,
       }
     }).catch((response) => {
