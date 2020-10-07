@@ -84,8 +84,7 @@ const actions = {
       customAttributes: [lineItemNote]
     });
     commit('setCheckout', newCheckout);
-    commit('setCartIsBusy', false);
-    dispatch('autoOpenDrawer');
+    commit('setCartIsBusy', false); // dispatch('autoOpenDrawer');
   },
 
   // UpdateLineItems: modifies line items (array) in the checkout
