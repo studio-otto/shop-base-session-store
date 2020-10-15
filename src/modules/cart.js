@@ -65,7 +65,7 @@ const actions = {
 
     commit('setCheckout', newCheckout);
     commit('setCartIsBusy', false);
-    dispatch('autoOpenDrawer');
+    // dispatch('autoOpenDrawer');
   },
 
   // UpdateLineItems: modifies line items (array) in the checkout
