@@ -114,6 +114,15 @@ export default class GraphSql {
 					}
 				}
 			}
+
+			media(first: 1) {
+				edges{
+					node {
+						alt
+						mediaContentType
+					}
+				}
+			}
 	
 			variants(first: 20) {
 				pageInfo {

@@ -86,7 +86,8 @@ export default class ApiClient {
       manualSortWeight,
       images: this._normalizeGraphqlResponse(product.images).content,
       metafields: this._mapMetafieldsArrayToObj(this._normalizeGraphqlResponse(product.metafields).content),
-      variants: this._normalizeGraphqlResponse(product.variants).content 
+      variants: this._normalizeGraphqlResponse(product.variants).content ,
+      media: this._normalizeGraphqlResponse(product.media)
     }
   }
 
