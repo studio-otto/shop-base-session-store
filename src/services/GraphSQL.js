@@ -114,6 +114,25 @@ export default class GraphSql {
 					}
 				}
 			}
+
+			media(first: 1) {
+				edges{
+					node {
+						alt
+						mediaContentType
+						... on Video {
+              id
+              sources {
+                format
+                height
+                mimeType
+                url
+                width
+              }
+            }
+					}
+				}
+			}
 	
 			variants(first: 20) {
 				pageInfo {
