@@ -308,6 +308,16 @@ class GraphSql {
 					node {
 						alt
 						mediaContentType
+						... on Video {
+              id
+              sources {
+                format
+                height
+                mimeType
+                url
+                width
+              }
+            }
 					}
 				}
 			}
