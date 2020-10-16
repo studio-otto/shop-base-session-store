@@ -115,7 +115,7 @@ export default class GraphSql {
 				}
 			}
 
-			media(first: 1) {
+			media(first: 10) {
 				edges{
 					node {
 						alt
