@@ -21,7 +21,7 @@ const getters = {
 // actions
 const actions = {
   async getCollection({state, dispatch}, handle) {
-    if(!state.collections[handle] || !state.collections[handle].products) {
+    if(!state.collections[handle] || state.collections[handle].partiallyLoaded) {
       await dispatch('getCollectionProducts', handle);
     }
   },
@@ -73,6 +73,8 @@ const actions = {
   }
 };
 
+const uniqArray = (arr) => [...new Set(arr)];
+
 // mutations
 const mutations = {
   setIsLoading(state, isLoading) {
@@ -87,7 +89,7 @@ const mutations = {
     const collection = state.collections[handle];
     const newCollection = collection ? collection : collectionResponse;
     if (collection && state.collections[handle].products && collectionResponse.products) {
-      newCollection.products = [...collection.products, ...collectionResponse.products]
+      newCollection.products = uniqArray([...collection.products, ...collectionResponse.products])
     }
     Vue.set(state.collections, handle, newCollection);
   },
@@ -103,8 +105,9 @@ const mutations = {
         isLoading: false,
         isLoaded: !isOnlyHandle
       }
-
-      Vue.set(state.allProducts, handle, productAttrs);
+      const products = state.allProducts
+      products[handle] = productAttrs
+      Vue.set(state.allProducts, products);
     })
   },
 

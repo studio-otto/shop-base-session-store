@@ -449,7 +449,7 @@ const actions$1 = {
     state,
     dispatch
   }, handle) {
-    if (!state.collections[handle] || !state.collections[handle].products) {
+    if (!state.collections[handle] || state.collections[handle].partiallyLoaded) {
       await dispatch('getCollectionProducts', handle);
     }
   },
@@ -538,7 +538,10 @@ const actions$1 = {
     commit('pushToProducts', loadedProducts);
   }
 
-}; // mutations
+};
+
+const uniqArray = arr => [...new Set(arr)]; // mutations
+
 
 const mutations$1 = {
   setIsLoading(state, isLoading) {
@@ -557,7 +560,7 @@ const mutations$1 = {
     const newCollection = collection ? collection : collectionResponse;
 
     if (collection && state.collections[handle].products && collectionResponse.products) {
-      newCollection.products = [...collection.products, ...collectionResponse.products];
+      newCollection.products = uniqArray([...collection.products, ...collectionResponse.products]);
     }
 
     Vue__default['default'].set(state.collections, handle, newCollection);
@@ -575,7 +578,9 @@ const mutations$1 = {
         isLoading: false,
         isLoaded: !isOnlyHandle
       };
-      Vue__default['default'].set(state.allProducts, handle, productAttrs);
+      const products = state.allProducts;
+      products[handle] = productAttrs;
+      Vue__default['default'].set(state.allProducts, products);
     });
   },
 
@@ -596,9 +601,88 @@ var products = {
   getters: getters$1,
   actions: actions$1,
   mutations: mutations$1
+};const state$2 = () => ({
+  items: {},
+  menuHasClosed: false,
+  menuIsOpen: false
+});
+
+const mutations$2 = {
+  setMenu(state, items) {
+    state.items = items;
+  },
+
+  setError(state, error) {
+    state.menu = error;
+  },
+
+  toggleMenu(state) {
+    state.menuIsOpen = !state.menuIsOpen;
+  }
+
+};
+
+const uniqArray$1 = arr => [...new Set(arr)];
+
+const addMenuCollectionInfo = (commit, items) => {
+  items.forEach(item => {
+    if (item.isCollection) {
+      const {
+        products,
+        title,
+        productCount,
+        url
+      } = item;
+      const handle = url.replace('/collections/', '');
+      commit('products/updateCollection', {
+        handle: handle,
+        collectionResponse: {
+          products,
+          title,
+          handle,
+          partiallyLoaded: item.products.length < productCount
+        }
+      }, {
+        root: true
+      });
+    }
+  });
+};
+
+const addMenuProductInfo = (commit, items) => {
+  const allNewProducts = uniqArray$1(items.reduce((handles, item) => {
+    return typeof item.products === "object" ? [...handles, ...item.products] : handles;
+  }, []));
+  commit('products/pushToProducts', allNewProducts, {
+    root: true
+  });
+};
+
+const actions$2 = {
+  async fetchMenu({
+    commit,
+    rootState
+  }) {
+    const menuApi = await axios__default['default']({
+      method: 'GET',
+      url: rootState.menuLocation
+    });
+    const menuItems = menuApi.data && menuApi.data.menu ? menuApi.data.menu : [];
+    commit('setMenu', menuItems);
+    addMenuProductInfo(commit, menuItems);
+    addMenuCollectionInfo(commit, menuItems);
+  }
+
+};
+var menu = {
+  namespaced: true,
+  state: state$2,
+  actions: actions$2,
+  mutations: mutations$2
 };const Modules = {
   cart,
-  products
+  products,
+  menu
 };const CreateStore = (domain, token) => {
   return new Vuex__default['default'].store({
     getters: {

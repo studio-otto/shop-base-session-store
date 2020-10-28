@@ -1,9 +1,11 @@
 import cart from '@/modules/cart'
 import products from '@/modules/products'
+import menu from '@/modules/menu'
 
 const Modules = {
   cart,
-  products
+  products,
+  menu
 }
 
 export { Modules }
