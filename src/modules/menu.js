@@ -40,7 +40,7 @@ const addMenuCollectionInfo = (commit, items) => {
         },
         { root: true }
       )
-      
+      if(!item.products.length < productCount) commit('products/markCollectionAsFullyLoaded', handle, { root: true })
     }
   })
 }
@@ -64,7 +64,6 @@ const actions = {
     commit('setMenu', menuItems)
     addMenuProductInfo(commit, menuItems)
     addMenuCollectionInfo(commit, menuItems)
-
   }
 }
 

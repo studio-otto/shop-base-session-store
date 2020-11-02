@@ -658,6 +658,9 @@ const addMenuCollectionInfo = (commit, items) => {
       }, {
         root: true
       });
+      if (!item.products.length < productCount) commit('products/markCollectionAsFullyLoaded', handle, {
+        root: true
+      });
     }
   });
 };
