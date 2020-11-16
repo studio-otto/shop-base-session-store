@@ -26,10 +26,11 @@ const actions = {
   async getCheckout({commit, dispatch, getters}, checkoutId = null) {
     commit("setCartIsBusy", true);
     const id = checkoutId ? checkoutId : localStorage.getItem('currentCheckout');
-    const checkout = id && id !== "undefined"
+    const checkoutCheck = id && id !== "undefined"
             ? await getters.client.checkout.fetch(id)
             : await dispatch('createCheckout');
-
+    // Sometimes we have an old checkout id but it has staled, if that is the case create a new one
+    const checkout = checkoutCheck == null ? await dispatch('createCheckout') : checkoutCheck;
     commit('setCheckout', checkout);
     commit("setCartIsBusy", false);
   },
