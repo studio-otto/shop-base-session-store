@@ -26,7 +26,9 @@ const actions = {
   }, checkoutId = null) {
     commit("setCartIsBusy", true);
     const id = checkoutId ? checkoutId : localStorage.getItem('currentCheckout');
-    const checkout = id && id !== "undefined" ? await getters.client.checkout.fetch(id) : await dispatch('createCheckout');
+    const checkoutCheck = id && id !== "undefined" ? await getters.client.checkout.fetch(id) : await dispatch('createCheckout'); // Sometimes we have an old checkout id but it has staled, if that is the case create a new one
+
+    const checkout = checkoutCheck == null ? await dispatch('createCheckout') : checkoutCheck;
     commit('setCheckout', checkout);
     commit("setCartIsBusy", false);
   },
@@ -109,16 +111,11 @@ const actions = {
   },
 
   // UpdateLineItem: modify the quantity of (one line item) line item in checkout
+  // line item = {id: , quantity}
   async updateLineItem({
     dispatch
-  }, {
-    lineItemId,
-    quantity
-  }) {
-    dispatch('updateLineItems', [{
-      id: lineItemId,
-      quantity
-    }]);
+  }, lineItem) {
+    dispatch('updateLineItems', [lineItem]);
   },
 
   // removeLineItem: Remove a lineitem via id

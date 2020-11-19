@@ -88,8 +88,9 @@ const actions = {
   },
 
   // UpdateLineItem: modify the quantity of (one line item) line item in checkout
-  async updateLineItem({dispatch}, {lineItemId, quantity}) {
-    dispatch('updateLineItems', [{id: lineItemId, quantity}])
+  // line item = {id: , quantity}
+  async updateLineItem({dispatch}, lineItem) {
+    dispatch('updateLineItems', [lineItem])
   },
 
   // removeLineItem: Remove a lineitem via id
