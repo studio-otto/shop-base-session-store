@@ -284,7 +284,7 @@ var cart = {
 				}
 			}
 	
-			metafields(first: 50, namespace: "pdp_extras") {
+			metafields(first: 40, namespace: "pdp_extras") {
 				edges {
 					node {
 						key
@@ -293,7 +293,7 @@ var cart = {
 				}
 			}
 
-			media(first: 10) {
+			media(first: 5) {
 				edges{
 					node {
 						alt
@@ -312,7 +312,7 @@ var cart = {
 				}
 			}
 	
-			variants(first: 20) {
+			variants(first: 40) {
 				pageInfo {
 					hasNextPage
 					hasPreviousPage

@@ -291,7 +291,7 @@ class GraphSql {
 				}
 			}
 	
-			metafields(first: 50, namespace: "pdp_extras") {
+			metafields(first: 40, namespace: "pdp_extras") {
 				edges {
 					node {
 						key
@@ -300,7 +300,7 @@ class GraphSql {
 				}
 			}
 
-			media(first: 10) {
+			media(first: 5) {
 				edges{
 					node {
 						alt
@@ -319,7 +319,7 @@ class GraphSql {
 				}
 			}
 	
-			variants(first: 20) {
+			variants(first: 40) {
 				pageInfo {
 					hasNextPage
 					hasPreviousPage
