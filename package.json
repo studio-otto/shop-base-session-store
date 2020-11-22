@@ -18,8 +18,8 @@
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
-  "author": "mrb",
-  "license": "ISC",
+  "author": "Studio Otto",
+  "license": "MIT",
   "dependencies": {
     "@vue/compiler-sfc": "^3.0.2",
     "axios": "^0.21.0",
