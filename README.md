@@ -22,7 +22,7 @@ Inside app / vue shop
 ### Nuxt installation
 in /store/index.js
 
-```
+```javascript
 import { Modules } from 'session-store'
 
 // These are default config overrides - totally optional
@@ -42,13 +42,13 @@ thats it!
 ### Non-Nuxt installation
 in app.js or w/e you are installing/mounting vue
 
-```
-  import { CreateStore } from 'session-store'
+```javascript
+import { CreateStore } from 'session-store'
 
-  // new Vue({
-  //   el: '#someid',
-  //   store: CreateStore(domain, token),
-  // })
+new Vue({
+  el: '#someid',
+  store: CreateStore(domain, token),
+})
 ```
 
 *[See wiki for examples and methods](https://github.com/studio-otto/shop-base-session-store/wiki/Methods)*
