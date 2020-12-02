@@ -541,7 +541,7 @@ const actions$1 = {
     commit,
     getters
   }, handlesArray = []) {
-    const unloadedProductHandles = handlesArray.filter(handle => !state.allProducts[handle]);
+    const unloadedProductHandles = handlesArray.filter(handle => !state.allProducts[handle] || !state.allProducts[handle].isLoaded);
     const loadedProducts = await getters.apiClient.fetchProductsFromHandles(unloadedProductHandles);
     commit('pushToProducts', loadedProducts);
   }
