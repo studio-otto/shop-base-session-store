@@ -106,7 +106,7 @@ export default class GraphSql {
 				}
 			}
 	
-			metafields(first: 50, namespace: "pdp_extras") {
+			metafields(first: 40, namespace: "pdp_extras") {
 				edges {
 					node {
 						key
@@ -115,7 +115,7 @@ export default class GraphSql {
 				}
 			}
 
-			media(first: 10) {
+			media(first: 5) {
 				edges{
 					node {
 						alt
@@ -134,7 +134,7 @@ export default class GraphSql {
 				}
 			}
 	
-			variants(first: 20) {
+			variants(first: 40) {
 				pageInfo {
 					hasNextPage
 					hasPreviousPage
