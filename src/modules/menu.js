@@ -40,18 +40,23 @@ const addMenuCollectionInfo = (commit, items) => {
         },
         { root: true }
       )
-      if(item.products.length === productCount) commit('products/markCollectionAsFullyLoaded', handle, { root: true })
+      if(item.products.length >= productCount) commit('products/markCollectionAsFullyLoaded', handle, { root: true })
     }
 
     if(item.links) {
-      addMenuCollectionInfo(item.links)
+      addMenuCollectionInfo(commit, item.links)
     }
   })
 }
 
 const addMenuProductInfo = (commit, items) => {
   const allNewProducts = uniqArray(items.reduce((handles, item) => {
-    return typeof item.products === "object" ? [...handles, ...item.products] : handles
+    const topLevelHandles = typeof item.products === "object" ? item.products : []
+    const nestedHandles = item.links ? item.links.reduce((nestedHandles, nestedItem) => {
+      return typeof nestedItem.products === "object" ? [...nestedHandles, ...nestedItem.products] : nestedHandles
+    }, []) : []
+
+    return [...handles, ...topLevelHandles, ...nestedHandles]
   }, []))
 
   commit('products/pushToProducts', allNewProducts, { root: true })
@@ -64,7 +69,6 @@ const actions = {
       url: rootState.menuLocation
     })
     const menuItems = menuApi.data && menuApi.data.menu ? menuApi.data.menu : []
-
     commit('setMenu', menuItems)
     addMenuProductInfo(commit, menuItems)
     addMenuCollectionInfo(commit, menuItems)
