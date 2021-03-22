@@ -586,9 +586,7 @@ const mutations$1 = {
         isLoading: false,
         isLoaded: !isOnlyHandle
       };
-      const products = state.allProducts;
-      products[handle] = productAttrs;
-      Vue.set(state.allProducts, products);
+      Vue.set(state.allProducts, handle, productAttrs);
     });
   },
 
