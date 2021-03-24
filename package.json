@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@vue/compiler-sfc": "^3.0.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "shopify-buy": "^2.11.0",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11",
