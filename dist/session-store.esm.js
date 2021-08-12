@@ -457,9 +457,8 @@ const actions$1 = {
     state,
     dispatch
   }, handle) {
-    if (!state.collections[handle] || state.collections[handle].partiallyLoaded) {
-      await dispatch('getCollectionProducts', handle);
-    }
+    // if(!state.collections[handle] || state.collections[handle].partiallyLoaded) {
+    await dispatch('getCollectionProducts', handle); // }
   },
 
   async getCollectionProducts({
@@ -564,10 +563,11 @@ const mutations$1 = {
     handle,
     collectionResponse
   }) {
-    const collection = state.collections[handle];
-    const newCollection = collection ? collection : collectionResponse;
+    const collection = state.collections[handle]; // const newCollection = collection ? collection : collectionResponse;
 
-    if (collection && state.collections[handle].products && collectionResponse.products) {
+    const newCollection = collection && collection.partiallyLoaded ? collection : collectionResponse; // if (collection && state.collections[handle].products && collectionResponse.products) {
+
+    if (collection && state.collections[handle].products && collectionResponse.products && collection.partiallyLoaded) {
       newCollection.products = uniqArray([...collection.products, ...collectionResponse.products]);
     }
 
