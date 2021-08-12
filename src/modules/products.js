@@ -21,9 +21,9 @@ const getters = {
 // actions
 const actions = {
   async getCollection({state, dispatch}, handle) {
-    if(!state.collections[handle] || state.collections[handle].partiallyLoaded) {
+    // if(!state.collections[handle] || state.collections[handle].partiallyLoaded) {
       await dispatch('getCollectionProducts', handle);
-    }
+    // }
   },
 
   async getCollectionProducts({dispatch, commit}, handle) {
@@ -87,8 +87,10 @@ const mutations = {
 
   updateCollection(state, {handle, collectionResponse}) {
     const collection = state.collections[handle];
-    const newCollection = collection ? collection : collectionResponse;
-    if (collection && state.collections[handle].products && collectionResponse.products) {
+    // const newCollection = collection ? collection : collectionResponse;
+    const newCollection = collection && collection.partiallyLoaded ? collection : collectionResponse;
+    // if (collection && state.collections[handle].products && collectionResponse.products) {
+      if (collection && state.collections[handle].products && collectionResponse.products && collection.partiallyLoaded ) {
       newCollection.products = uniqArray([...collection.products, ...collectionResponse.products])
     }
     Vue.set(state.collections, handle, newCollection);
