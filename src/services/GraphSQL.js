@@ -146,9 +146,18 @@ export default class GraphSql {
 						compareAtPrice
 						price
 						title
+            image {
+              src
+            }
 						selectedOptions {
 							value
 						}
+            swatch_color: metafield(
+              namespace: "pdp_extras"
+              key: "swatch_color"
+            ) {
+                value
+            }
 					}
 				}
 			}
