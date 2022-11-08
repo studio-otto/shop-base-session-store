@@ -28,7 +28,7 @@ const actions = {
     const id = checkoutId ? checkoutId : localStorage.getItem('currentCheckout');
     const checkoutCheck = id && id !== "undefined" ? await getters.client.checkout.fetch(id) : await dispatch('createCheckout'); // Sometimes we have an old checkout id but it has staled, if that is the case create a new one
 
-    const checkout = checkoutCheck == null ? await dispatch('createCheckout') : checkoutCheck;
+    const checkout = checkoutCheck == null || checkoutCheck.completedAt !== null ? await dispatch('createCheckout') : checkoutCheck;
     commit('setCheckout', checkout);
     commit("setCartIsBusy", false);
   },
