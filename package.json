@@ -54,8 +54,5 @@
   "bugs": {
     "url": "https://github.com/studio-otto/shop-base-session-store/issues"
   },
-  "homepage": "https://github.com/studio-otto/shop-base-session-store#readme",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "homepage": "https://github.com/studio-otto/shop-base-session-store#readme"
 }

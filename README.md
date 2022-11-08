@@ -1,6 +1,20 @@
 # Session Store
 Shopify session store for Shopify Vue sites - Query methods and centralized store for products and cart
 
+## Deploying to NPM
+```
+// Bump the version depending on change typy
+$ npm version patch
+$ npm version minor
+$ npm version major
+
+// Build
+$ yarn build
+
+// Push to NPM
+$ npm publish --access public
+```
+
 ## Install
 
 Create `.npmrc` file in project directory
