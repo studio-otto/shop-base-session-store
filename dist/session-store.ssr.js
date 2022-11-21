@@ -328,7 +328,9 @@ var cart = {
               src
             }
 						selectedOptions {
-							value
+							value,
+							name
+
 						}
             swatch_color: metafield(
               namespace: "pdp_extras"
