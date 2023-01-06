@@ -15,7 +15,7 @@ export default class ApiClient {
         'content-type': 'application/graphql',
         'X-Shopify-Storefront-Access-Token': this.shopifyToken
       },
-      url: `https://${this.shopifyDomain}/api/2020-01/graphql.json`,
+      url: `https://${this.shopifyDomain}/api/2023-01/graphql.json`,
       data: gsqlData
     }
     return axios(options)
