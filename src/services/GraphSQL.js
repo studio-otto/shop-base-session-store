@@ -1,24 +1,26 @@
-export default class GraphSql {  
-	construct() { }
+export default class GraphSql {
+  construct() {}
 
-	replaceAll(string, find, replace){
-		return string.replace(
-			new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "g"),
-			replace
-		);
-	}
+  replaceAll(string, find, replace) {
+    return string.replace(
+      new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'),
+      replace
+    )
+  }
 
-	productsFromHandlesQuery(handles) {
-		return `{
-			${handles.map((handle) => this.productByHandle(handle)).join("")}
-		}`;
-	}
+  productsFromHandlesQuery(handles) {
+    return `{
+			${handles.map((handle) => this.productByHandle(handle)).join('')}
+		}`
+  }
 
   collectionQuery(collectionHandle, limit, cursor) {
-		const collectionInfo = cursor ? '' : this.collectionFields();
+    const collectionInfo = cursor ? '' : this.collectionFields()
     return `{ collectionByHandle(handle: "${collectionHandle}") {
 					${collectionInfo}
-          products(first:${limit}${cursor ? `, after: "${cursor}"` : ''}, sortKey: MANUAL) {						
+          products(first:${limit}${
+      cursor ? `, after: "${cursor}"` : ''
+    }, sortKey: MANUAL) {
             pageInfo {
               hasNextPage
               hasPreviousPage
@@ -32,23 +34,25 @@ export default class GraphSql {
           }
         }
       }
-    `;
+    `
   }
 
-	collectionFields() {
+  collectionFields() {
     return `
       title
       description
       image {
 				src
 			}
-    `;
+    `
   }
 
-	searchProductsQuery(queryString, cursor) {
-		return `
+  searchProductsQuery(queryString, cursor) {
+    return `
 			{
-				products(query: "${queryString}", first: 30 ${cursor ? `, after: "${cursor}"` : ""}) {
+				products(query: "${queryString}", first: 30 ${
+      cursor ? `, after: "${cursor}"` : ''
+    }) {
 					pageInfo {
 						hasNextPage,
 						hasPreviousPage
@@ -61,30 +65,32 @@ export default class GraphSql {
 					}
 				}
 			}
-		`;
-	}
+		`
+  }
 
-	queryProduct(handle) {
-		return `{product: productByHandle(handle: "${handle}") {
+  queryProduct(handle) {
+    return `{product: productByHandle(handle: "${handle}") {
 			${this._productFragment()}
-		}}`;
-	}
+		}}`
+  }
 
-	productByHandle(handle) {
-		return `
+  productByHandle(handle) {
+    return `
 			${this.uniqHandle(handle)}: productByHandle(handle: "${handle}") {
 				${this._productFragment()}
 			}
-		`;
-	}
+		`
+  }
 
-	uniqHandle(handle) {
-		return `${handle.replace(/-|[0-9]/g, "")}_${Math.random().toString().substring(7)}`
-	}
+  uniqHandle(handle) {
+    return `${handle.replace(/-|[0-9]/g, '')}_${Math.random()
+      .toString()
+      .substring(7)}`
+  }
 
-	// Not a true graphql fragment because that wasn't working for me but can be used as one with string interpolation
-	_productFragment() {
-		return `
+  // Not a true graphql fragment because that wasn't working for me but can be used as one with string interpolation
+  _productFragment() {
+    return `
 			availableForSale
 			title
 			handle
@@ -93,7 +99,7 @@ export default class GraphSql {
 			descriptionHtml
 			productType
 			id
-	
+
 			images(first: 10) {
 				pageInfo {
 					hasNextPage
@@ -105,8 +111,8 @@ export default class GraphSql {
 					}
 				}
 			}
-	
-			metafields(identifiers: 
+
+			metafields(identifiers:
 				[
 					{ namespace: "pdp_extras", key: "pdp_swatch_name" },
 					{ namespace: "pdp_extras", key: "pdp_swatch_products" },
@@ -137,7 +143,7 @@ export default class GraphSql {
 					}
 				}
 			}
-	
+
 			variants(first: 40) {
 				pageInfo {
 					hasNextPage
@@ -146,7 +152,7 @@ export default class GraphSql {
 				edges {
 					node {
 						id
-						available
+						availableForSale
 						compareAtPrice
 						price
 						title
@@ -167,6 +173,6 @@ export default class GraphSql {
 					}
 				}
 			}
-		`;
-	}
+		`
+  }
 }

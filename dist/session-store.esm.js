@@ -291,13 +291,17 @@ class GraphSql {
 				}
 			}
 	
-			metafields(first: 40, namespace: "pdp_extras") {
-				edges {
-					node {
-						key
-						value
-					}
-				}
+			metafields(identifiers: 
+				[
+					{ namespace: "pdp_extras", key: "pdp_swatch_name" },
+					{ namespace: "pdp_extras", key: "pdp_swatch_products" },
+					{ namespace: "pdp_extras", key: "pdp_swatch_hex" },
+					{ namespace: "pdp_extras", key: "pdp_field_details" },
+					{ namespace: "pdp_extras", key: "pdp_similar_products" }
+				]
+			){
+				key
+				value
 			}
 
 			media(first: 5) {
@@ -370,7 +374,7 @@ class ApiClient {
         'content-type': 'application/graphql',
         'X-Shopify-Storefront-Access-Token': this.shopifyToken
       },
-      url: `https://${this.shopifyDomain}/api/2020-01/graphql.json`,
+      url: `https://${this.shopifyDomain}/api/2023-01/graphql.json`,
       data: gsqlData
     };
     return axios(options);
