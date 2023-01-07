@@ -153,8 +153,12 @@ export default class GraphSql {
 					node {
 						id
 						availableForSale
-						compareAtPrice
-						price
+						compareAtPrice {
+							amount
+						}
+						price {
+							amount
+						}
 						title
             image {
               src
