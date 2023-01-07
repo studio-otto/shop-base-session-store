@@ -16,12 +16,6 @@ $ npm publish --access public
 ```
 
 ## Install
-
-Create `.npmrc` file in project directory
-```
-@studio-otto:registry=https://npm.pkg.github.com
-```
-
 Install package
 ```bash
 yarn add @studio-otto/session-store
