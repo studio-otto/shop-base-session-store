@@ -112,7 +112,7 @@ export default class GraphSql {
 					{ namespace: "pdp_extras", key: "pdp_swatch_products" },
 					{ namespace: "pdp_extras", key: "pdp_swatch_hex" },
 					{ namespace: "pdp_extras", key: "pdp_field_details" },
-					{ namepsace: "pdp_extras", key: "pdp_similar_products" }
+					{ namespace: "pdp_extras", key: "pdp_similar_products" }
 				]
 			){
 				key
