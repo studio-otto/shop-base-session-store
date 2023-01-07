@@ -190,12 +190,12 @@ class GraphSql {
   construct() {}
 
   replaceAll(string, find, replace) {
-    return string.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "g"), replace);
+    return string.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
   }
 
   productsFromHandlesQuery(handles) {
     return `{
-			${handles.map(handle => this.productByHandle(handle)).join("")}
+			${handles.map(handle => this.productByHandle(handle)).join('')}
 		}`;
   }
 
@@ -203,7 +203,7 @@ class GraphSql {
     const collectionInfo = cursor ? '' : this.collectionFields();
     return `{ collectionByHandle(handle: "${collectionHandle}") {
 					${collectionInfo}
-          products(first:${limit}${cursor ? `, after: "${cursor}"` : ''}, sortKey: MANUAL) {						
+          products(first:${limit}${cursor ? `, after: "${cursor}"` : ''}, sortKey: MANUAL) {
             pageInfo {
               hasNextPage
               hasPreviousPage
@@ -233,7 +233,7 @@ class GraphSql {
   searchProductsQuery(queryString, cursor) {
     return `
 			{
-				products(query: "${queryString}", first: 30 ${cursor ? `, after: "${cursor}"` : ""}) {
+				products(query: "${queryString}", first: 30 ${cursor ? `, after: "${cursor}"` : ''}) {
 					pageInfo {
 						hasNextPage,
 						hasPreviousPage
@@ -264,7 +264,7 @@ class GraphSql {
   }
 
   uniqHandle(handle) {
-    return `${handle.replace(/-|[0-9]/g, "")}_${Math.random().toString().substring(7)}`;
+    return `${handle.replace(/-|[0-9]/g, '')}_${Math.random().toString().substring(7)}`;
   } // Not a true graphql fragment because that wasn't working for me but can be used as one with string interpolation
 
 
@@ -278,7 +278,7 @@ class GraphSql {
 			descriptionHtml
 			productType
 			id
-	
+
 			images(first: 10) {
 				pageInfo {
 					hasNextPage
@@ -290,8 +290,8 @@ class GraphSql {
 					}
 				}
 			}
-	
-			metafields(identifiers: 
+
+			metafields(identifiers:
 				[
 					{ namespace: "pdp_extras", key: "pdp_swatch_name" },
 					{ namespace: "pdp_extras", key: "pdp_swatch_products" },
@@ -322,7 +322,7 @@ class GraphSql {
 					}
 				}
 			}
-	
+
 			variants(first: 40) {
 				pageInfo {
 					hasNextPage
@@ -331,7 +331,7 @@ class GraphSql {
 				edges {
 					node {
 						id
-						available
+						availableForSale
 						compareAtPrice
 						price
 						title
