@@ -2,10 +2,10 @@ import axios from 'axios'
 import GraphSql from '@/services/GraphSQL'
 
 export default class ApiClient {
-  constructor({shopifyDomain, shopifyToken}) {
-    this.shopifyDomain = shopifyDomain;
-    this.shopifyToken = shopifyToken;
-    this.graphSql = new GraphSql();
+  constructor({ shopifyDomain, shopifyToken }) {
+    this.shopifyDomain = shopifyDomain
+    this.shopifyToken = shopifyToken
+    this.graphSql = new GraphSql()
   }
 
   fetch(gsqlData) {
@@ -21,25 +21,28 @@ export default class ApiClient {
     return axios(options)
   }
 
-  fetchCollection(collectionHandle, cursor, limit =  50, page = 1) {
-    const query = this.graphSql.collectionQuery(collectionHandle, limit, cursor);
-    return this.fetch(query).then((response) => {
-      // nested data response from graphQl
-      const responseData = response.data.data.collectionByHandle
-      // product and page data comes nested in graphql edges and nodes
-      if(!responseData) return
+  fetchCollection(collectionHandle, cursor, limit = 50, page = 1) {
+    const query = this.graphSql.collectionQuery(collectionHandle, limit, cursor)
+    return this.fetch(query)
+      .then((response) => {
+        // nested data response from graphQl
+        const responseData = response.data.data.collectionByHandle
+        // product and page data comes nested in graphql edges and nodes
+        if (!responseData) return
 
-      const productsData = this._normalizeGraphqlResponse(responseData.products)
+        const productsData = this._normalizeGraphqlResponse(
+          responseData.products
+        )
 
-      return {
-        ...responseData,
-        products: productsData.content
-                    .map(product => product.handle),
-        nextPage: productsData.cursor,
-      }
-    }).catch((response) => {
-      console.log(`fetchCollection error: ${response}`);
-    })
+        return {
+          ...responseData,
+          products: productsData.content.map((product) => product.handle),
+          nextPage: productsData.cursor
+        }
+      })
+      .catch((response) => {
+        console.log(`fetchCollection error: ${response}`)
+      })
   }
 
   filterAvailableAndStocked(product) {
@@ -50,33 +53,39 @@ export default class ApiClient {
   }
 
   fetchProduct(handle) {
-    let query = this.graphSql.queryProduct(handle);
+    let query = this.graphSql.queryProduct(handle)
     return this.fetch(query).then((responseSuccess) => {
       return this._normalizeGraphqlProduct(responseSuccess.data.data.product)
-    });
+    })
   }
 
   fetchProductsFromHandles(handles) {
     if (handles && handles.length > 0) {
-      const query = this.graphSql.productsFromHandlesQuery(handles);
+      const query = this.graphSql.productsFromHandlesQuery(handles)
       return this.fetch(query).then((responseSuccess) => {
-        const products = responseSuccess.data.data;
+        const products = responseSuccess.data.data
         // Since graphql cant have dasherized keys, we have to underscore them and convert them back here
-        return products 
-            ? Object.values(products).map((product) => product ? this._normalizeGraphqlProduct(product) : 'Stale')
-            : []
-      });
-    } else { 
-      return [];
+        return products
+          ? Object.values(products).map((product) =>
+              product ? this._normalizeGraphqlProduct(product) : 'Stale'
+            )
+          : []
+      })
+    } else {
+      return []
     }
   }
 
   _normalizeGraphqlResponse(response) {
-    const hasNextPage = response.hasOwnProperty('pageInfo') ? response.pageInfo.hasNextPage : false;
+    const hasNextPage = response.hasOwnProperty('pageInfo')
+      ? response.pageInfo.hasNextPage
+      : false
     return {
       hasNextPage,
-      cursor: hasNextPage ? response.edges[response.edges.length - 1].cursor : "",
-      content: response.edges.map((edge) => edge.node )
+      cursor: hasNextPage
+        ? response.edges[response.edges.length - 1].cursor
+        : '',
+      content: response.edges.map((edge) => edge.node)
     }
   }
 
@@ -85,16 +94,21 @@ export default class ApiClient {
       ...product,
       manualSortWeight,
       images: this._normalizeGraphqlResponse(product.images).content,
-      metafields: this._mapMetafieldsArrayToObj(this._normalizeGraphqlResponse(product.metafields).content),
-      variants: this._normalizeGraphqlResponse(product.variants).content ,
+      metafields: this._mapMetafieldsArrayToObj(product.metafields),
+      variants: this._normalizeGraphqlResponse(product.variants).content,
       media: this._normalizeGraphqlResponse(product.media)
     }
   }
 
   _mapMetafieldsArrayToObj(metafields) {
-    return metafields.reduce((metaObj, metafield) => {
-      metaObj[metafield.key] = metafield.value;
-      return metaObj;
+    // remove null from array
+    const updatedArray = metaArray.filter((x) => x !== null)
+
+    return updatedArray.reduce((metaObj, metaField) => {
+      if (metaField) {
+        metaObj[metaField.key] = metaField.value
+        return metaObj
+      }
     }, {})
   }
 }

@@ -422,7 +422,7 @@ var cart = {
     const hasNextPage = response.hasOwnProperty('pageInfo') ? response.pageInfo.hasNextPage : false;
     return {
       hasNextPage,
-      cursor: hasNextPage ? response.edges[response.edges.length - 1].cursor : "",
+      cursor: hasNextPage ? response.edges[response.edges.length - 1].cursor : '',
       content: response.edges.map(edge => edge.node)
     };
   }
@@ -431,16 +431,20 @@ var cart = {
     return { ...product,
       manualSortWeight,
       images: this._normalizeGraphqlResponse(product.images).content,
-      metafields: this._mapMetafieldsArrayToObj(this._normalizeGraphqlResponse(product.metafields).content),
+      metafields: this._mapMetafieldsArrayToObj(product.metafields),
       variants: this._normalizeGraphqlResponse(product.variants).content,
       media: this._normalizeGraphqlResponse(product.media)
     };
   }
 
   _mapMetafieldsArrayToObj(metafields) {
-    return metafields.reduce((metaObj, metafield) => {
-      metaObj[metafield.key] = metafield.value;
-      return metaObj;
+    // remove null from array
+    const updatedArray = metaArray.filter(x => x !== null);
+    return updatedArray.reduce((metaObj, metaField) => {
+      if (metaField) {
+        metaObj[metaField.key] = metaField.value;
+        return metaObj;
+      }
     }, {});
   }
 
