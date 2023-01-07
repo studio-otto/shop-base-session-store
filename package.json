@@ -1,6 +1,6 @@
 {
   "name": "@studio-otto/session-store",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Adds centralized data store and getters for shopify nuxt app",
   "main": "dist/session-store.ssr.js",
   "browser": "dist/session-store.esm.js",
