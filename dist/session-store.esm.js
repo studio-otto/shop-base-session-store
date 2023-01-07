@@ -448,7 +448,7 @@ class ApiClient {
 
   _mapMetafieldsArrayToObj(metafields) {
     // remove null from array
-    const updatedArray = metaArray.filter(x => x !== null);
+    const updatedArray = metafields.filter(x => x !== null);
     return updatedArray.reduce((metaObj, metaField) => {
       if (metaField) {
         metaObj[metaField.key] = metaField.value;
